@@ -1,0 +1,17 @@
+sequenceDiagram
+    participant browser
+    participant server
+
+    Note over browser: User enters note content and submits form
+
+    browser->>browser: Form data extraction
+    browser->>browser: Clear input field
+    browser->>browser: Redraw notes
+
+    browser->>browser: Prepare note object
+    Note over browser: { "content": "New note content", "date": "2023-07-09" }
+
+    browser->>server: POST https://studies.cs.helsinki.fi/exampleapp/new_note_spa
+    activate server
+    server-->>browser: HTTP 200 OK
+    deactivate server
