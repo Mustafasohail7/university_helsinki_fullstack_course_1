@@ -1,2 +1,8 @@
-# part0
-part_0 of Full Stack Course by University of Helsinki
+part0
+part1
+  courseinfo
+  unicafe
+  anecdotes
+part2
+  phonebook
+  countries
