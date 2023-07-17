@@ -1,7 +1,7 @@
 import Person from "./Person"
 
-const Persons = ({filteredPersons}) => {
-  return <div>{filteredPersons.map(person => <Person key={person.id} person={person} />)}</div>
+const Persons = ({filteredPersons,handleDelete}) => {
+  return <div>{filteredPersons.map(person => <Person key={person.id} person={person} handleDelete={handleDelete}/>)}</div>
     
 }
 

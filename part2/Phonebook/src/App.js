@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import Filter from './components/Filter'
 import PersonForm from './components/PersonForm'
 import Persons from './components/Persons'
-import axios from 'axios'
+import {getAll,create,update,eliminate} from './services/phonebook'
 
 const App = () => {
   const [persons, setPersons] = useState([]) 
@@ -21,11 +21,10 @@ const App = () => {
   },[searchText,persons])
 
   const fetchData = () => {
-    axios
-    .get("http://localhost:3001/persons")
-    .then(response => {
-      setPersons(response.data)
-      setFilteredPersons(response.data)
+    getAll()
+    .then(data => {
+      setPersons(data)
+      setFilteredPersons(data)
     })
   }
 
@@ -35,20 +34,28 @@ const App = () => {
     setNewName(event.target.value)
   }
 
-  const hanldeSubmit = (event) => {
+  const handleSubmit = (event) => {
     event.preventDefault()
     const personObject = {
       name: newName,
-      number: number,
-      id: persons.length + 1
+      number: number
     }
     const nameExists = persons.some(person => person.name === personObject.name)
     if (nameExists) {
-      alert(`${personObject.name} is already added to phonebook`)
+      window.confirm(`${personObject.name} is already added to phonebook, replace the old number with a new one?`)
+      update( persons.find(person => person.name === personObject.name).id, personObject)
+      .then(data => {
+        const afterUpdate = persons.map(person => person.id === data.id ? data : person)
+        setPersons(afterUpdate)
+        setFilteredPersons(afterUpdate)
+      })
       return
     }
-    setPersons(persons.concat(personObject))
-    setFilteredPersons(persons.concat(personObject))
+    create(personObject)
+    .then(data => {
+      setPersons(persons.concat(data))
+      setFilteredPersons(persons.concat(data))
+    })
     setNewName('')
     setNumber('')
   }
@@ -61,14 +68,23 @@ const App = () => {
     setSearchText(event.target.value)
   }
 
+  const handleDelete = (id) => {
+    eliminate(id)
+    .then(() => {
+      const afterDelete = persons.filter(person => person.id !== id)
+      setPersons(afterDelete)
+      setFilteredPersons(afterDelete)
+    })
+  }
+
   return (
     <div>
       <h2>Phonebook</h2>
       <Filter searchText={searchText} handleSearch={handleSearch} />
       <h2>add a new</h2>
-      <PersonForm hanldeSubmit={hanldeSubmit} newName={newName} handleNameChange={handleNameChange} number={number} handleNumberChange={handleNumberChange} />
+      <PersonForm handleSubmit={handleSubmit} newName={newName} handleNameChange={handleNameChange} number={number} handleNumberChange={handleNumberChange} />
       <h2>Numbers</h2>
-      <Persons filteredPersons={filteredPersons} />
+      <Persons filteredPersons={filteredPersons} handleDelete={handleDelete} />
     </div>
   )
 }
