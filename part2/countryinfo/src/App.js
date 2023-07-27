@@ -7,6 +7,8 @@ function App() {
 
   const [countries, setCountries] = useState([])
   const [filtered,setFiltered] = useState([])
+  const [lat,setLat] = useState(0)
+  const [long,setLong] = useState(0) 
 
   useEffect(() => {
     axios
@@ -37,7 +39,7 @@ function App() {
         find countries <input onChange={handleChange} />
       </div>
       <div>
-        <Display countries={filtered} setCountries={setFiltered} />
+        <Display countries={filtered} setCountries={setFiltered} lat={lat} long={long} setLat={setLat} setLong={setLong} />
       </div>
     </div>
   );

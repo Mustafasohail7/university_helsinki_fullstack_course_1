@@ -1,4 +1,17 @@
-const Display = ({countries,setCountries}) => {
+import { useEffect, useState } from 'react'
+import axios from 'axios'
+
+const Display = ({countries,setCountries,lat,long,setLat,setLong}) => {
+
+    const [weather,setWeather] = useState({})
+
+    // useEffect(() => {
+    //         axios
+    //         .get(`https://api.openweathermap.org/data/3.0/onecall?lat=${lat}&lon=${long}&appid=${process.env.REACT_APP_API_KEY}`)
+    //         .then(response => {
+    //         setWeather(response.data)
+    //         })
+    //   },[lat,long,setCountries])
 
     const handleClick = (country) => {
         setCountries([country])
@@ -14,6 +27,8 @@ const Display = ({countries,setCountries}) => {
         ));
     } else if (countries.length === 1) {
         let country = countries[0];
+        setLat(country.capitalInfo.latlng[0])
+        setLong(country.capitalInfo.latlng[1])
         return (
           <div>
             <h1>{country.name.common}</h1>
@@ -29,6 +44,8 @@ const Display = ({countries,setCountries}) => {
             </ul>
             <img src={country.flags.png} alt={`${country.name.common} flag`} />
             <h2>Weather in {country.capital}</h2>
+            <p>{country.capitalInfo.latlng[0]}</p>
+            <p>{country.capitalInfo.latlng[1]}</p>
           </div>
         );
     }
